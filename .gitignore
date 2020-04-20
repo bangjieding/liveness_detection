@@ -1,0 +1,6 @@
+*.mov
+*.png
+*.jpg
+*.avi
+output/
+detector/
