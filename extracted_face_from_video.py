@@ -22,17 +22,19 @@ class DataCollect:
 
     def collect_data_from_video(self, video_path):
         faces = []
-        print("[INFO] 从视频采集数据...")
         vc = cv2.VideoCapture(video_path)
         total_frame_num = vc.get(7)
-        self.skip = total_frame_num // self.frame_num
+        if total_frame_num < self.frame_num:
+            skip = 1
+        else:
+            skip = total_frame_num // self.frame_num
         read = 0
         saved = 0
         while True:
             (grabbed, frame) = vc.read()
             if grabbed:
                 read += 1
-                if read % self.skip != 0:
+                if read % skip != 0:
                     continue
                 elif saved != self.frame_num:
                     (h, w) = frame.shape[:2]
@@ -51,15 +53,13 @@ class DataCollect:
                     break
             else:
                 break
-        print(len(faces))
-        print(type(faces[0]))
         vc.release()
-        cv2.destroyAllWindows()
+        return faces
 
-if __name__ == "__main__":
-    video_path = './videos/fake.mov'
-    test = DataCollect(0.5, 50)
-    test.collect_data_from_video(video_path)
+# if __name__ == "__main__":
+#     video_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp/test/18/1.avi'
+#     test = DataCollect(0.5, 50)
+#     print(len(test.collect_data_from_video(video_path)))
 
     # dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp'
     # # video_path = [os.path.join(dataset_path, path) for path in ['train', 'test']]
