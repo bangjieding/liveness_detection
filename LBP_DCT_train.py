@@ -3,6 +3,7 @@ import os
 import cv2
 import joblib
 import numpy as np
+from tqdm import tqdm
 from imutils import paths
 import skimage.feature as skif
 from sklearn.svm import SVC, SVR
@@ -55,21 +56,26 @@ def get_lbphs(img_list):
     return lbphs
 
 def get_dct(videoset):
-    extract_face = DataCollect(0.5, 50)
+    extract_face = DataCollect(0.5, 48)
+    X_dct_lpf = []
     X_dct = []
-    for index, video_path in enumerate(videoset):
+    # for index, video_path in tqdm(enumerate(videoset)):
+    for video_path in tqdm(videoset):
         img_list = extract_face.collect_data_from_video(video_path)
-        print("[INFO] 从视频{}采集数据...".format(video_path))
+        cv2.imwrite('./extractedfacetest.png',img_list[0])
+        # print("[INFO] 从视频{}采集数据...".format(video_path))
         lbphs = get_lbphs(img_list)
         lbphs = np.array(lbphs).astype(np.float32)
-        print(lbphs.shape)
         lbphs_dct_lpf = []
+        lbphs_dct = []
         for i in range(lbphs.shape[1]):
             lbph_dct = cv2.dct(lbphs[:, i])
+            lbphs_dct = lbphs_dct + lbph_dct
             lbph_dct_lpf = lbph_dct.T.take([0,1,2,3,4,5,6,7], axis=1)[0].tolist()
             lbphs_dct_lpf = lbphs_dct_lpf + lbph_dct_lpf
-        X_dct.append(lbphs_dct_lpf)
-    return X_dct
+        X_dct.append(lbphs_dct)
+        X_dct_lpf.append(lbphs_dct_lpf)
+    return X_dct, X_dct_lpf
 
 def get_minibatch(data, labels, batch_size):
     while True:
@@ -81,13 +87,13 @@ def get_minibatch(data, labels, batch_size):
 def train_svc(X_train, y_train):
     clf = SVC(C=1, kernel='rbf', gamma='auto', decision_function_shape='ovo')
     print("[INFO] 开始训练... ")
-    clf.fit(get_dct(X_train), y_train)
+    clf.fit(get_dct(X_train)[0], y_train)
     joblib.dump(clf, "/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/lbp/lbp+dct_clf.model")
     # print(clf.predict(get_lbphs(['./test.png', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/real/0.png', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/fake/0.png'])))
 
 def test_svc(X_test, y_test='invalid'):
     clf = joblib.load("/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/lbp/lbp+dct_clf.model")
-    print(clf.score(get_dct(X_test), y_test))
+    print(clf.score(get_dct(X_test)[0], y_test))
     # print(clf.predict(get_dct(X_test)))
 
 if __name__ == "__main__":
@@ -103,10 +109,8 @@ if __name__ == "__main__":
         test_set.append(line.strip('\n'))
     train_labels = [x.split(os.path.sep)[-1].strip('.avi').replace('1', 'real').replace('7', 'replay') for x in train_set]
     test_labels = [x.split(os.path.sep)[-1].strip('.avi').replace('1', 'real').replace('7', 'replay') for x in test_set]
-    # print(len(train_set), len(test_set))
-    # print(train_set[60])
-    # test_svc(["./videos/real.mov"])
-    train_svc(train_set[0:30], train_labels[0:30])
+    # get_dct(train_set[0:1])
+    train_svc(train_set[0:10], train_labels[0:10])
     test_svc(test_set, test_labels)
     # dataset_paths = ['/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Real', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Replay']
     # # dataset_paths = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
