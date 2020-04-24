@@ -33,52 +33,36 @@ def get_lbphs(img_list):
     for img in img_list:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         gray = cv2.resize(gray, (300, 300))
-        h, w = gray.shape
-        block_lbphs = [] #存储一帧图像的分块LBP编码
-        for row in range(3):
-            for col in range(3):
-                img_block = gray[(row * h//3) : ((row+1) * h//3 - 1) , (col * w//3) : ((col+1) * w//3 - 1)]
-                img_block_lbp = skif.local_binary_pattern(img_block, POINTS, RADIUS, MODE)
-                max_bins = int(img_block_lbp.max() + 1)
-                hist, _ = np.histogram(img_block_lbp, bins=max_bins, range=(0, max_bins))
-                block_lbphs = block_lbphs + hist.tolist()
-        lbphs.append(block_lbphs)
-    return lbphs
-        
-    # lbphs_dct_lpf = []
-    # for img_path in img_paths:
-    #     lbphs = [] #存储同一视频下每一帧LBP编码
-    #     for img in img_path:
-    #         gray = cv2.imread(img, cv2.IMREAD_GRAYSCALE)
-    #         gray = cv2.resize(gray, (300, 300))
-    #         h, w = gray.shape
-    #         block_lbphs = [] #存储一帧图像的分块LBP编码
-    #         for row in range(3):
-    #             for col in range(3):
-    #                 img_block = gray[(row * h//3) : ((row+1) * h//3 - 1) , (col * w//3) : ((col+1) * w//3 - 1)]
-    #                 img_block_lbp = skif.local_binary_pattern(img_block, POINTS, RADIUS, MODE)
-    #                 # img_block_lbp = img_block_lbp.astype(np.int32)
-    #                 max_bins = int(img_block_lbp.max() + 1)
-    #                 hist, _ = np.histogram(img_block_lbp, bins=max_bins, range=(0, max_bins))
-    #                 block_lbphs = block_lbphs + hist.tolist()
 
-    #         # 以下是不分块图片LBP提取
-    #         # img_uni_lbp = skif.local_binary_pattern(gray, POINTS, RADIUS, MODE)
-    #         # img_uni_lbp = img_uni_lbp.astype(np.int32)
-    #         # max_bins = int(img_uni_lbp.max() + 1)
-    #         # hist, _ = np.histogram(img_uni_lbp, bins=max_bins, range=(0,max_bins))
-    #         lbphs.append(block_lbphs)
-    #     lbphs_dct_lpf.append(get_dct(lbphs))
-    # return lbphs_dct_lpf
+        #存储一帧图像的分块LBP编码
+        # h, w = gray.shape
+        # block_lbphs = [] 
+        # for row in range(3):
+        #     for col in range(3):
+        #         img_block = gray[(row * h//3) : ((row+1) * h//3 - 1) , (col * w//3) : ((col+1) * w//3 - 1)]
+        #         img_block_lbp = skif.local_binary_pattern(img_block, POINTS, RADIUS, MODE)
+        #         max_bins = int(img_block_lbp.max() + 1)
+        #         hist, _ = np.histogram(img_block_lbp, bins=max_bins, range=(0, max_bins))
+        #         block_lbphs = block_lbphs + hist.tolist()
+        # lbphs.append(block_lbphs)
+
+        # 以下是不分块图片LBP提取
+        img_uni_lbp = skif.local_binary_pattern(gray, POINTS, RADIUS, MODE)
+        img_uni_lbp = img_uni_lbp.astype(np.int32)
+        max_bins = int(img_uni_lbp.max() + 1)
+        hist, _ = np.histogram(img_uni_lbp, bins=max_bins, range=(0,max_bins))
+        lbphs.append(hist.tolist())
+    return lbphs
 
 def get_dct(videoset):
     extract_face = DataCollect(0.5, 50)
     X_dct = []
     for index, video_path in enumerate(videoset):
         img_list = extract_face.collect_data_from_video(video_path)
-        print("[INFO] 从视频{}采集数据...".format(index))
+        print("[INFO] 从视频{}采集数据...".format(video_path))
         lbphs = get_lbphs(img_list)
         lbphs = np.array(lbphs).astype(np.float32)
+        print(lbphs.shape)
         lbphs_dct_lpf = []
         for i in range(lbphs.shape[1]):
             lbph_dct = cv2.dct(lbphs[:, i])
@@ -122,7 +106,7 @@ if __name__ == "__main__":
     # print(len(train_set), len(test_set))
     # print(train_set[60])
     # test_svc(["./videos/real.mov"])
-    # train_svc(train_set, train_labels)
+    train_svc(train_set[0:30], train_labels[0:30])
     test_svc(test_set, test_labels)
     # dataset_paths = ['/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Real', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Replay']
     # # dataset_paths = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
