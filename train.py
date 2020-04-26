@@ -28,9 +28,9 @@ from math import ceil
 random.seed(42)
 
 class Config:
-    INIT_LR = 1e-4
+    INIT_LR = 1e-5
     BS = 50
-    EPOCHS = 4
+    EPOCHS = 6
 
 def split_train_vali_test(dataset_path, output_path):
     dataset = []
@@ -120,7 +120,6 @@ def compile_model(dataset_path, output_path, net):
     # (X_train, X_test_vali, y_train, y_test_vali) =  train_test_split(data, labels, test_size=0.20, random_state=42)
     # (X_vali, X_test, y_vali, y_test) = train_test_split(X_test_vali, y_test_vali, test_size=0.5, random_state=42)
     (X_train, X_vali, X_test, y_train, y_vali, y_test, le) = split_train_vali_test(dataset_path, output_path)
-
     
     print("[INFO] 编译模型...")
     opt = Adam(lr=Config.INIT_LR, decay=Config.INIT_LR / Config.EPOCHS)
@@ -130,7 +129,7 @@ def compile_model(dataset_path, output_path, net):
     elif net=='AlexNetPro':
         model = AlexNetPro.build(width=227, height=227, depth=3, classes=len(le.classes_))
 
-    if le.classes_ == 2:
+    if len(le.classes_) == 2:
         model.compile(loss="binary_crossentropy", optimizer=opt, metrics=["accuracy"])
     else:
         model.compile(loss="categorical_crossentropy", optimizer=opt, metrics=["accuracy"])
@@ -175,19 +174,42 @@ def compile_model(dataset_path, output_path, net):
     plt.savefig(evaluate_path)
 
 if __name__ == "__main__":
-    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
-    # output_path = './output/Mix'
-    # compile_model(dataset_path, output_path)
+    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
+    output_path = './output/AlexNetPro/Mix'
+    compile_model(dataset_path, output_path, 'AlexNetPro')
+
+    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
+    output_path = './output/AlexNetPro/Print'
+    compile_model(dataset_path, output_path, 'AlexNetPro')
 
     dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
-    output_path = './output/AlexNet/Replay'
+    output_path = './output/AlexNetPro/Replay'
+    compile_model(dataset_path, output_path, 'AlexNetPro')
+
+    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
+    output_path = './output/AlexNet/Mix'
     compile_model(dataset_path, output_path, 'AlexNet')
 
-    print("----------------------Second-----------------------")
     dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
     output_path = './output/AlexNet/Print'
     compile_model(dataset_path, output_path, 'AlexNet')
 
+    dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
+    output_path = './output/AlexNet/Replay'
+    compile_model(dataset_path, output_path, 'AlexNet')
+    
+
+    # dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
+    # output_path = './output/AlexNet/Replay'
+    # compile_model(dataset_path, output_path, 'AlexNet')
+
+    # print("----------------------Second-----------------------")
+    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
+    # output_path = './output/AlexNet/Print'
+    # compile_model(dataset_path, output_path, 'AlexNet')
+
+
+    
     # dataset_path = ['../dataset/Homemade/fake', '../dataset/Homemade/real']
     # output_path = './output/test'
     # compile_model(dataset_path, output_path, 'AlexNetPro')

@@ -6,6 +6,8 @@ from imutils import paths
 import time
 import cv2
 import os
+from tqdm import tqdm
+import extracted_face_from_video
 
 class DataCollect:
     def __init__ (self, detector_path, confidence, skip):
@@ -118,6 +120,49 @@ class DataCollect:
 
 if __name__ == "__main__":
     # dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp'
+    # extract_face = extracted_face_from_video.DataCollect(0.5,   10)
+    # output_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Extracted'
+
+    # for line in open(dataset_path + os.path.sep + 'replay_attack.txt'):
+    #     p = output_path + os.path.sep + 'replay'
+    #     saved = len(list(paths.list_images(p)))
+    #     img_list = extract_face.collect_data_from_video(line.strip('\n'))
+    #     for img in img_list:
+    #         cv2.imwrite(p + os.path.sep + str(saved) + '.png', img)
+    #         saved = saved + 1
+    
+    # for line in open(dataset_path + os.path.sep + 'print_attack.txt'):
+    #     p = output_path + os.path.sep + 'print'
+    #     saved = len(list(paths.list_images(p)))
+    #     img_list = extract_face.collect_data_from_video(line.strip('\n'))
+    #     for img in img_list:
+    #         cv2.imwrite(p + os.path.sep + str(saved) + '.png', img)
+    #         saved = saved + 1
+
+    # for line in open(dataset_path + os.path.sep + 'partial_attack.txt'):
+    #     p = output_path + os.path.sep + 'partial'
+    #     saved = len(list(paths.list_images(p)))
+    #     img_list = extract_face.collect_data_from_video(line.strip('\n'))
+    #     for img in img_list:
+    #         cv2.imwrite(p + os.path.sep + str(saved) + '.png', img)
+    #         saved = saved + 1
+    
+    # for line in open(dataset_path + os.path.sep + 'real_face.txt'):
+    #     p = output_path + os.path.sep + 'real'
+    #     saved = len(list(paths.list_images(p)))
+    #     img_list = extract_face.collect_data_from_video(line.strip('\n'))
+    #     for img in img_list:
+    #         cv2.imwrite(p + os.path.sep + str(saved) + '.png', img)
+    #         saved = saved + 1
+
+    # print("总共{}张replay_attack.".format(len(list(paths.list_images(output_path + os.path.sep + 'replay')))))
+    # print("总共{}张print_attack.".format(len(list(paths.list_images(output_path + os.path.sep + 'print')))))
+    # print("总共{}张partial_attack.".format(len(list(paths.list_images(output_path + os.path.sep + 'partial')))))
+    # print("总共{}张real.".format(len(list(paths.list_images(output_path + os.path.sep + 'real')))))
+    # for line in open(dataset_path + os.path.sep + 'test.txt'):
+    #     test_set.append(line.strip('\n'))
+    
+    # dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp'
     # # video_path = [os.path.join(dataset_path, path) for path in ['train', 'test']]
     # train_path = [os.path.join(dataset_path, path) for path in ['train' + os.path.sep + str(x) for x in list(range(1, 21))]]
     # test_path = [os.path.join(dataset_path, path) for path in ['test' + os.path.sep + str(x) for x in list(range(1, 31))]]
@@ -154,29 +199,36 @@ if __name__ == "__main__":
     real_test_txt_path = os.path.join(dataset_path, 'client_test_raw.txt')
     fake_test_txt_path = os.path.join(dataset_path, 'imposter_test_raw.txt')
 
-
+    i = 0
     for line in open(real_train_txt_path):
-        img_path = line.strip('\n').replace('\\', os.path.sep)
-        img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
-        print(img_path)
-        test.collect_data_from_image(img_path, '../dataset/real')
-        print('[INFO]{}'.format(img_path))
-        
-    
-    for line in open(fake_train_txt_path):
-        img_path = line.strip('\n').replace('\\', os.path.sep)
-        img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
-        test.collect_data_from_image(img_path, '../dataset/print')
-        print('[INFO]{}'.format(img_path))
-    
+        i = i+1
+        if i % 5 == 0:
+            img_path = line.strip('\n').replace('\\', os.path.sep)
+            img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
+            print(img_path)
+            test.collect_data_from_image(img_path, '../dataset/Extracted/real')
+            print('[INFO]{}'.format(img_path))
+    # i = 0
+    # for line in open(fake_train_txt_path):
+    #     i = i+1
+    #     if i % 10 == 0:
+    #         img_path = line.strip('\n').replace('\\', os.path.sep)
+    #         img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
+    #         test.collect_data_from_image(img_path, '../dataset/Extracted/print_NUAA')
+    #         print('[INFO]{}'.format(img_path))
+    i = 0
     for line in open(real_test_txt_path):
-        img_path = line.strip('\n').replace('\\', os.path.sep)
-        img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
-        test.collect_data_from_image(img_path, '../dataset/real')
-        print('[INFO]{}'.format(img_path))
-
-    for line in open(fake_test_txt_path):
-        img_path = line.strip('\n').replace('\\', os.path.sep)
-        img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
-        test.collect_data_from_image(img_path, '../dataset/print')
-        print('[INFO]{}'.format(img_path))
+        i = i+1
+        if i % 5 == 0:
+            img_path = line.strip('\n').replace('\\', os.path.sep)
+            img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
+            test.collect_data_from_image(img_path, '../dataset/Extracted/real')
+            print('[INFO]{}'.format(img_path))
+    # i = 0
+    # for line in open(fake_test_txt_path):
+    #     i = i+1
+    #     if i % 10 == 0:
+    #         img_path = line.strip('\n').replace('\\', os.path.sep)
+    #         img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
+    #         test.collect_data_from_image(img_path, '../dataset/Extracted/print_NUAA')
+    #         print('[INFO]{}'.format(img_path))

@@ -33,8 +33,7 @@ def get_lbphs(img_list):
     lbphs = []
     for img in img_list:
         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        gray = cv2.resize(gray, (300, 300))
-
+        # gray = cv2.resize(gray, (300, 300))
         #存储一帧图像的分块LBP编码
         # h, w = gray.shape
         # block_lbphs = [] 
@@ -52,30 +51,32 @@ def get_lbphs(img_list):
         img_uni_lbp = img_uni_lbp.astype(np.int32)
         max_bins = int(img_uni_lbp.max() + 1)
         hist, _ = np.histogram(img_uni_lbp, bins=max_bins, range=(0,max_bins))
-        lbphs.append(hist.tolist())
+        # lbphs.append(hist.tolist())
+        lbphs = lbphs + hist.tolist()
     return lbphs
 
 def get_dct(videoset):
-    extract_face = DataCollect(0.5, 48)
+    extract_face = DataCollect(0.5, 40)
     X_dct_lpf = []
     X_dct = []
-    # for index, video_path in tqdm(enumerate(videoset)):
+    X_lbph = []
+
     for video_path in tqdm(videoset):
         img_list = extract_face.collect_data_from_video(video_path)
-        cv2.imwrite('./extractedfacetest.png',img_list[0])
-        # print("[INFO] 从视频{}采集数据...".format(video_path))
         lbphs = get_lbphs(img_list)
-        lbphs = np.array(lbphs).astype(np.float32)
-        lbphs_dct_lpf = []
-        lbphs_dct = []
-        for i in range(lbphs.shape[1]):
-            lbph_dct = cv2.dct(lbphs[:, i])
-            lbphs_dct = lbphs_dct + lbph_dct
-            lbph_dct_lpf = lbph_dct.T.take([0,1,2,3,4,5,6,7], axis=1)[0].tolist()
-            lbphs_dct_lpf = lbphs_dct_lpf + lbph_dct_lpf
-        X_dct.append(lbphs_dct)
-        X_dct_lpf.append(lbphs_dct_lpf)
-    return X_dct, X_dct_lpf
+        X_lbph.append(lbphs)
+        # lbphs = np.array(lbphs).astype(np.float32)
+        # lbphs_dct_lpf = []
+        # lbphs_dct = []
+        # for i in range(lbphs.shape[0]):
+        #     lbph_dct = cv2.dct(lbphs[i,:])
+        #     lbphs_dct = lbphs_dct + lbph_dct.T[0].tolist()
+        #     lbph_dct_lpf = lbph_dct.T.take([0,1,2,3,4,5,6,7], axis=1)[0].tolist()
+        #     lbphs_dct_lpf = lbphs_dct_lpf + lbph_dct_lpf
+        # X_dct.append(lbphs_dct)
+        # X_dct_lpf.append(lbphs_dct_lpf)
+    # print(np.array(X_dct_lpf).shape)
+    return X_lbph, X_dct, X_dct_lpf
 
 def get_minibatch(data, labels, batch_size):
     while True:
@@ -85,7 +86,7 @@ def get_minibatch(data, labels, batch_size):
             yield (X, y)
 
 def train_svc(X_train, y_train):
-    clf = SVC(C=1, kernel='rbf', gamma='auto', decision_function_shape='ovo')
+    clf = SVC(C=1e4, kernel='rbf', gamma='auto', decision_function_shape='ovo')
     print("[INFO] 开始训练... ")
     clf.fit(get_dct(X_train)[0], y_train)
     joblib.dump(clf, "/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/lbp/lbp+dct_clf.model")
@@ -97,9 +98,6 @@ def test_svc(X_test, y_test='invalid'):
     # print(clf.predict(get_dct(X_test)))
 
 if __name__ == "__main__":
-    # video_set = ['./videos/fake.mov', './videos/real.mov']
-    # get_dct(video_set)
-
     dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp'
     train_set = []
     test_set = []
@@ -109,24 +107,8 @@ if __name__ == "__main__":
         test_set.append(line.strip('\n'))
     train_labels = [x.split(os.path.sep)[-1].strip('.avi').replace('1', 'real').replace('7', 'replay') for x in train_set]
     test_labels = [x.split(os.path.sep)[-1].strip('.avi').replace('1', 'real').replace('7', 'replay') for x in test_set]
-    # get_dct(train_set[0:1])
-    train_svc(train_set[0:10], train_labels[0:10])
-    test_svc(test_set, test_labels)
-    # dataset_paths = ['/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Real', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/LBP_DCT/Replay']
-    # # dataset_paths = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
-    # print("[INFO] 正在加载图片...")
-    # # X_train, X_test, y_train, y_test = load_dataset(dataset_paths)
-    # # X_train, labels = load_dataset(dataset_paths, True)
-
-    # # dct = get_lbphs(X_train)
-    # # print(dct[0])
-    # # print(len(dct[0]))
-    # # print(X_test[0:10])
-    # # print(y_test[0:10])
-    # # print("[INFO] 训练集{}张图片，测试集{}张图片".format(len(X_train), len(X_test)))
-    # # train_svc(X_train, labels)
-    # # test_svc(X_test, y_test)
-    # dataset_paths = ['/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/test']
-    # X_test = load_dataset(dataset_paths, False)
-    # test_svc(X_test)
-    # get_lbphs(X_test)
+    # print(train_set[0:10])
+    # print(train_labels[0:10])
+    # get_dct(train_set[0:3])
+    # train_svc(train_set, train_labels)
+    test_svc(train_set[0:5], train_labels[0:5])

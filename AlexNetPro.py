@@ -16,19 +16,14 @@ class AlexNetPro:
             channels_dim = 1
         
         img_input = Input(shape=input_shape, dtype='float32', name='img_input')
-        # level_1_7x7 = Conv2D(32, (7,7), strides=(2,2), input_shape=input_shape, padding='valid', activation='relu', kernel_initializer='uniform')(img_input)
-        # # level_1_7x7 = BatchNormalization(axis = channels_dim)(level_1_7x7)
-        
-        # level_1_5x5 = Conv2D(96, (5,5), strides=(2,2), padding='same', activation='relu', kernel_initializer='uniform')(level_1_7x7)
-        # # level_1_5x5 = BatchNormalization(axis = channels_dim)(level_1_5x5)
+
         level_1 = Conv2D(96, (11,11), strides=(4,4), input_shape=input_shape, padding='valid', activation='relu', kernel_initializer='uniform')(img_input)
         # level_1 = BatchNormalization(axis = channels_dim)(level_1)
         level_1_pooling = MaxPooling2D(pool_size=(3,3), strides=(2,2))(level_1)
 
 
-
         level_2_1x1 = Conv2D(32, (1,1), strides=(1,1), padding='same', activation='relu', kernel_initializer='uniform')(level_1_pooling)
-        level_2_1x1 = BatchNormalization(axis = channels_dim)(level_2_1x1)
+        # level_2_1x1 = BatchNormalization(axis = channels_dim)(level_2_1x1)
 
         level_2_3x3 = Conv2D(96, (3,3), strides=(1,1), padding='same', activation='relu', kernel_initializer='uniform')(level_1_pooling)
         # level_2_3x3 = BatchNormalization(axis = channels_dim)(level_2_3x3)
@@ -57,8 +52,11 @@ class AlexNetPro:
         fc_1 = Dense(4096, activation='relu')(flatten)
         fc_1 = Dropout(0.5)(fc_1)
 
+        fc_2 = Dense(4096, activation='relu')(fc_1)
+        fc_2 = Dropout(0.5)(fc_2)
 
-        fake_type_or_real = Dense(classes, activation='softmax')(fc_1)
+
+        fake_type_or_real = Dense(classes, activation='softmax')(fc_2)
 
 
         model = Model(img_input, fake_type_or_real)
