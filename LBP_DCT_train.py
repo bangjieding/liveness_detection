@@ -51,31 +51,33 @@ def get_lbphs(img_list):
         img_uni_lbp = img_uni_lbp.astype(np.int32)
         max_bins = int(img_uni_lbp.max() + 1)
         hist, _ = np.histogram(img_uni_lbp, bins=max_bins, range=(0,max_bins))
-        # lbphs.append(hist.tolist())
-        lbphs = lbphs + hist.tolist()
+        lbphs.append(hist.tolist())
+        # lbphs = lbphs + hist.tolist()
     return lbphs
 
-def get_dct(videoset):
-    extract_face = DataCollect(0.5, 40)
-    X_dct_lpf = []
-    X_dct = []
-    X_lbph = []
 
+
+
+def get_dct(videoset):
+    extract_face = DataCollect(0.8, 40)
+    X_dct_lpf = []
+    X_dct     = []
+    X_lbph    = []
     for video_path in tqdm(videoset):
         img_list = extract_face.collect_data_from_video(video_path)
         lbphs = get_lbphs(img_list)
         X_lbph.append(lbphs)
-        # lbphs = np.array(lbphs).astype(np.float32)
-        # lbphs_dct_lpf = []
-        # lbphs_dct = []
-        # for i in range(lbphs.shape[0]):
-        #     lbph_dct = cv2.dct(lbphs[i,:])
-        #     lbphs_dct = lbphs_dct + lbph_dct.T[0].tolist()
-        #     lbph_dct_lpf = lbph_dct.T.take([0,1,2,3,4,5,6,7], axis=1)[0].tolist()
-        #     lbphs_dct_lpf = lbphs_dct_lpf + lbph_dct_lpf
-        # X_dct.append(lbphs_dct)
-        # X_dct_lpf.append(lbphs_dct_lpf)
-    # print(np.array(X_dct_lpf).shape)
+        lbphs = np.array(lbphs).astype(np.float32)
+        lbphs_dct_lpf = []
+        lbphs_dct = []
+        for i in range(lbphs.shape[0]):
+            lbph_dct = cv2.dct(lbphs[i,:])
+            lbphs_dct = lbphs_dct + lbph_dct.T[0].tolist()
+            lbph_dct_lpf = lbph_dct.T.take([0,1,2,3,4,5,6,7], axis=1)[0].tolist()
+            lbphs_dct_lpf = lbphs_dct_lpf + lbph_dct_lpf
+        X_dct.append(lbphs_dct)
+        X_dct_lpf.append(lbphs_dct_lpf)
+    print(np.array(X_dct_lpf).shape)
     return X_lbph, X_dct, X_dct_lpf
 
 def get_minibatch(data, labels, batch_size):
@@ -110,5 +112,5 @@ if __name__ == "__main__":
     # print(train_set[0:10])
     # print(train_labels[0:10])
     # get_dct(train_set[0:3])
-    # train_svc(train_set, train_labels)
-    test_svc(train_set[0:5], train_labels[0:5])
+    train_svc(train_set, train_labels)
+    # test_svc(train_set[0:5], train_labels[0:5])
