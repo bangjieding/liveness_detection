@@ -1,22 +1,22 @@
 # import liveness_detection
 import os
-from imutils.video import VideoStream
-from keras.preprocessing.image import img_to_array
-from keras.models import load_model
-from keras.utils import np_utils
-import numpy as np
-import argparse
-import imutils
-import pickle
-import time
-import cv2
-import os
-from imutils import paths
-from sklearn.utils import shuffle
-import random
-from sklearn.metrics import classification_report
-from sklearn.preprocessing import LabelEncoder
-random.seed(42)
+# from imutils.video import VideoStream
+# from keras.preprocessing.image import img_to_array
+# from keras.models import load_model
+# from keras.utils import np_utils
+# import numpy as np
+# import argparse
+# import imutils
+# import pickle
+# import time
+# import cv2
+# import os
+# from imutils import paths
+# from sklearn.utils import shuffle
+# import random
+# from sklearn.metrics import classification_report
+# from sklearn.preprocessing import LabelEncoder
+# random.seed(42)
 
 
 def get_imgs_data(img_list):
@@ -83,18 +83,19 @@ with open(dataset_path + os.path.sep + 'fake_test_img_path.txt', 'w+') as fw:
 
 # demo = liveness_detection.Demo('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/Print.model', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/test_le.pickle', detector_path, 0.8)
 
-model = load_model('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/Print.model')
-le = pickle.loads(open('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/test_le.pickle', "rb").read())
+# model = load_model('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/Print.model')
+# le = pickle.loads(open('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNet/Print/test_le.pickle', "rb").read())
 X_test_temp = real_test_img_path + fake_test_img_path
 y_test_temp = ['real'] * len(real_test_img_path)
 y_test_temp = y_test_temp + ['fake'] * len(fake_test_img_path)
 print(len(real_test_img_path))
 print(len(fake_test_img_path))
-
+print(len(real_train_img_path))
+print(len(fake_train_img_path))
 
 print(len(y_test_temp))
 print(len(X_test_temp))
-X_test, y_test = shuffle(X_test_temp, y_test_temp, random_state=42)
+# X_test, y_test = shuffle(X_test_temp, y_test_temp, random_state=42)
 
 # le_test = LabelEncoder()
 # y_test = le_test.fit_transform(y_test)

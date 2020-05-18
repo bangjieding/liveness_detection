@@ -173,11 +173,19 @@ def compile_model(dataset_path, output_path, net):
     print("[INFO] 保存评价至{}".format(evaluate_path))
     plt.savefig(evaluate_path)
 
+def get_roc_curve():
+    from sklearn.metrics import roc_curve, auc
+
 if __name__ == "__main__":
-    dataset_path = ['../dataset/Extracted/print_NUAA', '../dataset/Extracted/real_NUAA']
-    output_path = './final/NUAA_print/AlexNet'
+    # dataset_path = ['../dataset/Extracted/print_NUAA', '../dataset/Extracted/real_NUAA']
+    # output_path = './final/NUAA_print/AlexNet'
+    # compile_model(dataset_path, output_path, 'AlexNet')
+    # output_path = './final/NUAA_print/AlexNetPro'
+    # compile_model(dataset_path, output_path, 'AlexNetPro')
+    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real','../dataset/Extracted/replay']
+    output_path = './final/CASIA/AlexNet'
     compile_model(dataset_path, output_path, 'AlexNet')
-    output_path = './final/NUAA_print/AlexNetPro'
+    output_path = './final/CASIA/AlexNetPro'
     compile_model(dataset_path, output_path, 'AlexNetPro')
 
     # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
