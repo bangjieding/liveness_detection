@@ -28,9 +28,9 @@ from math import ceil
 random.seed(42)
 
 class Config:
-    INIT_LR = 1e-5
+    INIT_LR = 1e-4
     BS = 50
-    EPOCHS = 6
+    EPOCHS = 10
 
 def split_train_vali_test(dataset_path, output_path):
     dataset = []
@@ -174,29 +174,31 @@ def compile_model(dataset_path, output_path, net):
     plt.savefig(evaluate_path)
 
 if __name__ == "__main__":
-    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
-    output_path = './output/AlexNetPro/Mix'
+    dataset_path = ['../dataset/Extracted/print_NUAA', '../dataset/Extracted/real_NUAA']
+    output_path = './final/NUAA_print/AlexNet'
+    compile_model(dataset_path, output_path, 'AlexNet')
+    output_path = './final/NUAA_print/AlexNetPro'
     compile_model(dataset_path, output_path, 'AlexNetPro')
 
-    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
-    output_path = './output/AlexNetPro/Print'
-    compile_model(dataset_path, output_path, 'AlexNetPro')
+    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
+    # output_path = './output/AlexNetPro/Print'
+    # compile_model(dataset_path, output_path, 'AlexNetPro')
 
-    dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
-    output_path = './output/AlexNetPro/Replay'
-    compile_model(dataset_path, output_path, 'AlexNetPro')
+    # dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
+    # output_path = './output/AlexNetPro/Replay'
+    # compile_model(dataset_path, output_path, 'AlexNetPro')
 
-    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
-    output_path = './output/AlexNet/Mix'
-    compile_model(dataset_path, output_path, 'AlexNet')
+    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/replay', '../dataset/Extracted/real']
+    # output_path = './output/AlexNet/Mix'
+    # compile_model(dataset_path, output_path, 'AlexNet')
 
-    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
-    output_path = './output/AlexNet/Print'
-    compile_model(dataset_path, output_path, 'AlexNet')
+    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
+    # output_path = './output/AlexNet/Print'
+    # compile_model(dataset_path, output_path, 'AlexNet')
 
-    dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
-    output_path = './output/AlexNet/Replay'
-    compile_model(dataset_path, output_path, 'AlexNet')
+    # dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']
+    # output_path = './output/AlexNet/Replay'
+    # compile_model(dataset_path, output_path, 'AlexNet')
     
 
     # dataset_path = ['../dataset/Extracted/replay', '../dataset/Extracted/real']

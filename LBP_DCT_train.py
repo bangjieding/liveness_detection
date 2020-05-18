@@ -90,13 +90,13 @@ def get_minibatch(data, labels, batch_size):
 def train_svc(X_train, y_train):
     clf = SVC(C=1e4, kernel='rbf', gamma='auto', decision_function_shape='ovo')
     print("[INFO] 开始训练... ")
-    clf.fit(get_dct(X_train)[0], y_train)
+    clf.fit(get_dct(X_train)[1], y_train)
     joblib.dump(clf, "/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/lbp/lbp+dct_clf.model")
     # print(clf.predict(get_lbphs(['./test.png', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/real/0.png', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/fake/0.png'])))
 
 def test_svc(X_test, y_test='invalid'):
     clf = joblib.load("/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/lbp/lbp+dct_clf.model")
-    print(clf.score(get_dct(X_test)[0], y_test))
+    print(clf.score(get_dct(X_test)[1], y_test))
     # print(clf.predict(get_dct(X_test)))
 
 if __name__ == "__main__":
@@ -112,5 +112,5 @@ if __name__ == "__main__":
     # print(train_set[0:10])
     # print(train_labels[0:10])
     # get_dct(train_set[0:3])
-    train_svc(train_set, train_labels)
-    # test_svc(train_set[0:5], train_labels[0:5])
+    # train_svc(train_set, train_labels)
+    test_svc(test_set[0:5], test_labels[0:5])
