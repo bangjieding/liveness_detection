@@ -121,8 +121,11 @@ class DataCollect:
 if __name__ == "__main__":
     # dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/CASIA_faceAntisp'
     # extract_face = extracted_face_from_video.DataCollect(0.5,   10)
-    # output_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Extracted'
-
+    detector_path = './detector'
+    output_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/test/real'
+    video_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/test_video/real/real.mov'
+    demo = DataCollect(detector_path, 0.5, 1)
+    demo.collect_data_from_video(video_path, output_path)
     # for line in open(dataset_path + os.path.sep + 'replay_attack.txt'):
     #     p = output_path + os.path.sep + 'replay'
     #     saved = len(list(paths.list_images(p)))
@@ -189,41 +192,41 @@ if __name__ == "__main__":
     #     test.collect_data_from_video(path, output_path)
     
     # print('[INFO] 总共提取了{}张replay图像。'.format(len(list(paths.list_images(output_path)))))
-    detector_path = './detector'
-    dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/raw'
-    test = DataCollect(detector_path, 0.5, 10)
+    # detector_path = './detector'
+    # dataset_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/raw'
+    # test = DataCollect(detector_path, 0.5, 10)
 
-    real_train_txt_path = os.path.join(dataset_path, 'client_train_raw.txt')
-    fake_train_txt_path = os.path.join(dataset_path, 'imposter_train_raw.txt')
+    # real_train_txt_path = os.path.join(dataset_path, 'client_train_raw.txt')
+    # fake_train_txt_path = os.path.join(dataset_path, 'imposter_train_raw.txt')
 
-    real_test_txt_path = os.path.join(dataset_path, 'client_test_raw.txt')
-    fake_test_txt_path = os.path.join(dataset_path, 'imposter_test_raw.txt')
+    # real_test_txt_path = os.path.join(dataset_path, 'client_test_raw.txt')
+    # fake_test_txt_path = os.path.join(dataset_path, 'imposter_test_raw.txt')
 
-    i = 0
-    for line in open(real_train_txt_path):
-        i = i+1
-        if i % 5 == 0:
-            img_path = line.strip('\n').replace('\\', os.path.sep)
-            img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
-            print(img_path)
-            test.collect_data_from_image(img_path, '../dataset/Extracted/real')
-            print('[INFO]{}'.format(img_path))
     # i = 0
-    # for line in open(fake_train_txt_path):
+    # for line in open(real_train_txt_path):
     #     i = i+1
-    #     if i % 10 == 0:
+    #     if i % 5 == 0:
     #         img_path = line.strip('\n').replace('\\', os.path.sep)
-    #         img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
-    #         test.collect_data_from_image(img_path, '../dataset/Extracted/print_NUAA')
+    #         img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
+    #         print(img_path)
+    #         test.collect_data_from_image(img_path, '../dataset/Extracted/real')
     #         print('[INFO]{}'.format(img_path))
-    i = 0
-    for line in open(real_test_txt_path):
-        i = i+1
-        if i % 5 == 0:
-            img_path = line.strip('\n').replace('\\', os.path.sep)
-            img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
-            test.collect_data_from_image(img_path, '../dataset/Extracted/real')
-            print('[INFO]{}'.format(img_path))
+    # # i = 0
+    # # for line in open(fake_train_txt_path):
+    # #     i = i+1
+    # #     if i % 10 == 0:
+    # #         img_path = line.strip('\n').replace('\\', os.path.sep)
+    # #         img_path = dataset_path + os.path.sep + 'ImposterRaw' + os.path.sep + img_path
+    # #         test.collect_data_from_image(img_path, '../dataset/Extracted/print_NUAA')
+    # #         print('[INFO]{}'.format(img_path))
+    # i = 0
+    # for line in open(real_test_txt_path):
+    #     i = i+1
+    #     if i % 5 == 0:
+    #         img_path = line.strip('\n').replace('\\', os.path.sep)
+    #         img_path = dataset_path + os.path.sep + 'ClientRaw' + os.path.sep + img_path
+    #         test.collect_data_from_image(img_path, '../dataset/Extracted/real')
+    #         print('[INFO]{}'.format(img_path))
     # i = 0
     # for line in open(fake_test_txt_path):
     #     i = i+1

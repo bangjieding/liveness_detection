@@ -1,5 +1,5 @@
-# import liveness_detection
-import os
+import liveness_detection
+
 # from imutils.video import VideoStream
 # from keras.preprocessing.image import img_to_array
 # from keras.models import load_model

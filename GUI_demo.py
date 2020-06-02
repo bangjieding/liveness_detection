@@ -91,8 +91,8 @@ from imutils import paths
 class APP:
     def __init__(self, window):
         self.root = window
-        self.model_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNetPro/Mix/Mix.model'
-        self.le = pickle.loads(open('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/output/AlexNetPro/Mix/train_le.pickle', "rb").read())
+        self.model_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/Homemade/Homemade.model'
+        self.le = pickle.loads(open('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/Homemade/train_le.pickle', "rb").read())
         self.confidence = 0.5
         self.detector_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/detector'
         self.load_detection_model()
@@ -188,6 +188,16 @@ class APP:
         self.camera_label.imgtk = imgtk
         self.camera_label.config(image=imgtk)
         self.root.after(1, self.call_camera)
+
+    def vote_result(craft_err, CNN_err, craft_label, CNN_label):
+        w_1 = 1 - craft_err/(craft_err + CNN_err)
+        w_2 = 1 - CNN_err/(craft_err + CNN_err)
+
+        if craft_label == CNN_label:
+            result = craft_label
+        else:
+            result = [craft_label, CNN_label][w_2 > w_1]
+        return result
 
     def start_detection(self, img):
         img = imutils.resize(img, width=600)

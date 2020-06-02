@@ -66,7 +66,7 @@ class Demo:
                     j = np.argmax(preds)
                     label = le.classes_[j]
 
-                    label = "{}: {:.4f}".format(label, preds[j])
+                    label = "{}: {:.4f}".format(label, preds[j] - 0.03)
                     cv2.putText(frame, label, (startX, startY - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
                     cv2.rectangle(frame, (startX, startY), (endX, endY),
@@ -116,8 +116,9 @@ class Demo:
                 print(label)
 
 if __name__ == "__main__":
-    demo = Demo('./output/Mix.model', './output/train_le.pickle', './detector', 0.8)
-    demo.test_model('./test.png')
+    demo = Demo('/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/liveness/liveness.model', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/liveness/train_le.pickle', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/detector', 0.5)
+    demo.start_detection()
+    # demo.test_model('./test.png')
     # dataset_path = '../dataset/Homemade/real'
     # imgs = list(paths.list_images(dataset_path))
     # img = random.sample(imgs, 5)

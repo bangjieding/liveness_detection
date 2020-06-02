@@ -9,6 +9,7 @@ from sklearn.utils import shuffle
 from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam
 from keras.utils import np_utils
+from keras.models import load_model
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
@@ -30,7 +31,7 @@ random.seed(42)
 class Config:
     INIT_LR = 1e-4
     BS = 50
-    EPOCHS = 10
+    EPOCHS = 5
 
 def split_train_vali_test(dataset_path, output_path):
     dataset = []
@@ -173,20 +174,30 @@ def compile_model(dataset_path, output_path, net):
     print("[INFO] 保存评价至{}".format(evaluate_path))
     plt.savefig(evaluate_path)
 
-def get_roc_curve():
-    from sklearn.metrics import roc_curve, auc
+def evaluate_model(model_path, le_path, X_test, y_test):
+    le = pickle.loads(open(le_path, "rb").read())
+    model = load_model(model_path)
+    print("[INFO] 评价...")
+    data_test = get_imgs_data(X_test)
+    predictions = model.predict(data_test, batch_size=Config.BS)
+    print(classification_report(y_test.argmax(axis=1), predictions.argmax(axis=1), target_names=le.classes_))
 
 if __name__ == "__main__":
+    dataset_path = ['/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/test/fake', '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/dataset/Homemade/test/real']
+    # (X_train, X_vali, X_test, y_train, y_vali, y_test, le) = split_train_vali_test(dataset_path, './output/lunwen')
+    # model_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/CASIA/AlexNetPro/AlexNetPro.model'
+    # le_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/CASIA/AlexNetPro/train_le.pickle'
+    # evaluate_model(model_path, le_path, X_vali, y_vali)
     # dataset_path = ['../dataset/Extracted/print_NUAA', '../dataset/Extracted/real_NUAA']
-    # output_path = './final/NUAA_print/AlexNet'
-    # compile_model(dataset_path, output_path, 'AlexNet')
+    output_path = '/Users/DingBangjie/Documents/Tintin/Study/Graduate/code/liveness_detection/final/liveness'
+    compile_model(dataset_path, output_path, 'AlexNetPro')
     # output_path = './final/NUAA_print/AlexNetPro'
     # compile_model(dataset_path, output_path, 'AlexNetPro')
-    dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real','../dataset/Extracted/replay']
-    output_path = './final/CASIA/AlexNet'
-    compile_model(dataset_path, output_path, 'AlexNet')
-    output_path = './final/CASIA/AlexNetPro'
-    compile_model(dataset_path, output_path, 'AlexNetPro')
+    # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real','../dataset/Extracted/replay']
+    # output_path = './final/CASIA/AlexNet'
+    # compile_model(dataset_path, output_path, 'AlexNet')
+    # output_path = './final/CASIA/AlexNetPro'
+    # compile_model(dataset_path, output_path, 'AlexNetPro')
 
     # dataset_path = ['../dataset/Extracted/print', '../dataset/Extracted/real']
     # output_path = './output/AlexNetPro/Print'
